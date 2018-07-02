@@ -2,7 +2,7 @@ class KakaoController < ApplicationController
   def keyboard #사용자가 처음에 채팅방에 들어왔을때.
     @keyboard = {
     :type => "buttons",
-    :buttons => ["로또","날씨","댕댕이"]
+    :buttons => ["로또","날씨","좆냥이","댕댕이"]
     }
     render json: @keyboard # json으로 value값은 keyboard를 렌더링
   end
@@ -29,13 +29,13 @@ class KakaoController < ApplicationController
       resultfeel = weatherinfo.css("#content > div.w_now2 > ul > li:nth-child(1) > div > em > strong")
 
       @text = "금일 강남구 역삼동의 오전은 #{resultwthmo.text}℃이고, 오후는 #{resultwthaf.text}℃ 이며, 오늘은 #{resultfeel.text}입니다."
-    # elsif @user_msg == "고양이"
-    #   @url = "http://thecatapi.com/api/images/get?format=xml&type=jpg"
-    #   @cat_xml = RestClient.get(@url) # url에 대한 응답을 저장
-    #   @cat_doc = Nokogiri::XML(@cat_xml) # 노코기리를 통해서 데이터를 정제
-    #   @cat_url = @cat_doc.xpath("//url").text
-    #   @text = @cat_url
-    # end
+    elsif @user_msg == "좆냥이"
+      @url = "http://thecatapi.com/api/images/get?format=xml&type=jpg"
+      @cat_xml = RestClient.get(@url) # url에 대한 응답을 저장
+      @cat_doc = Nokogiri::XML(@cat_xml) # 노코기리를 통해서 데이터를 정제
+      @cat_url = @cat_doc.xpath("//url").text
+      @text = @cat_url
+      
     elsif @user_msg == "댕댕이"
         @dog = "https://api.thedogapi.com/v1/images/search?format=src&mime_types=image/jpg"
         @text = @dog
@@ -46,7 +46,7 @@ class KakaoController < ApplicationController
       :text => @text # 사용자가 어떤 버튼을 눌렀는지를 보여준다.
       
     }
-    @return_msg_photo = { # 사진까지 같이 보내야할때에는 임마를 사용
+    @return_msg_photo_dog = { # 사진까지 같이 보내야할때에는 임마를 사용
       text: "이것은 귀여운 댕댕이다.",
       photo: { 
         "url": @dog,
@@ -56,16 +56,34 @@ class KakaoController < ApplicationController
       }
     }
     
+    @return_msg_photo_cat = { # 사진까지 같이 보내야할때에는 임마를 사용
+      text: "이래도 좆냥이입니까?.",
+      photo: { 
+        "url": @cat_url,
+        "width": 640,
+        "height": 480
+        
+      }
+    }
+    
+    
     @return_keyboard = { # 키보드에 대한 value값으로 들어간다.
       :type => "buttons",
-      :buttons => ["로또","날씨","댕댕이"]
+      :buttons => ["로또","날씨","좆냥이", "댕댕이"]
     }
     
     if @user_msg == "댕댕이"
       @result = { #result에 값을 준다
-        :message => @return_msg_photo, 
+        :message => @return_msg_photo_dog, 
         :keyboard => @return_keyboard
       }
+      
+    elsif @user_msg == "좆냥이"
+      @result = { #result에 값을 준다
+        :message => @return_msg_photo_cat, 
+        :keyboard => @return_keyboard
+      }  
+      
     else
        @result = { #result에 값을 준다
         :message => @return_msg, 
