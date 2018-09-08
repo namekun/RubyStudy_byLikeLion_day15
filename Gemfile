@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.3.4'
 
-
+gem 'scrapix'
 gem 'rest-client'
 gem 'nokogiri' # 특정한 문서형태를 쉽게 접근할 수 있게 다듬어주는 gem
 gem 'httparty'
